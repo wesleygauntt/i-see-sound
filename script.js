@@ -7,7 +7,8 @@ var Sights = function(){
 
     for (var i = 0; i < length; i++) {
       var bar = self.bars[i];
-      bar.height((frequencyData[i] / 250) * height + 'px');
+      // bar.height((frequencyData[i] / 250) * height + 'px');
+      bar.height((frequencyData[i] / 500) * height + 'px');
     }
 	}
 
@@ -20,6 +21,32 @@ var Sights = function(){
       self.bars.push($d);
       $('#visualization').append($d);
 	  }
+	}
+
+
+	/*
+		Reference for the math behind the circular rendering.
+		https://www.patrick-wied.at/blog/how-to-create-audio-visualizations-with-javascript-html
+	*/
+	this.circle = function(height, width, count){
+		var center = width / 1.5;
+		var circleMaxWidth = (width * 0.5) >> 0;
+		var radius = circleMaxWidth * 0.2;
+		var twopi = 2 * Math.PI;
+		var change = twopi / count;
+		var circlesEl = $('#visualization');
+    var transformOrigin = '0px 0px';
+
+		for (var i = 0; i < twopi; i += change) {
+				var left = (center + radius * Math.cos(i)) + 'px';
+		    var top = (center + radius * Math.sin(i)) + 'px';
+		    var transform = 'rotate(' + (i - (Math.PI / 2)) + 'rad)';
+		    var style = `left: ${left}; top: ${top}; transform: ${transform}; transform-origin: ${transformOrigin};`;
+				var $d = $("<div>", {class: "circular-bar", style: style});
+
+		    self.bars.push($d);
+		    circlesEl.append($d);
+		}
 	}
 }
 
@@ -41,9 +68,6 @@ var Sounds = function(){
 		});
 	}
 
-	/*
-		https://www.patrick-wied.at/blog/how-to-create-audio-visualizations-with-javascript-html
-	*/
 	this.play = function(){
 		var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 		var audioElement = document.getElementById('player');
@@ -56,13 +80,12 @@ var Sounds = function(){
 
 		var frequencyData = new Uint8Array(analyser.frequencyBinCount);
 		
-		sights.prepare(200, 400, (analyser.frequencyBinCount / 2));
-		// we're ready to receive some data!
+		// sights.prepare(200, 400, (analyser.frequencyBinCount / 2));
+		sights.circle(200, 400, (analyser.frequencyBinCount / 6));
+
 		function renderFrame() {
 		   requestAnimationFrame(renderFrame);
-		   // update data in frequencyData
 		   analyser.getByteFrequencyData(frequencyData);
-		   // render frame based on values in frequencyData
 		   sights.render(400, frequencyData)
 		}
 		renderFrame();

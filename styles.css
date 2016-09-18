@@ -6,6 +6,13 @@
 	-webkit-transition: .1s ease all;
 }
 
+.circular-bar {
+    position: absolute;
+    width: 2px;
+    background: #c9c9c9;
+    -webkit-transition: .1s ease all;
+}
+
 #visualization {
 	height: 500px;
 }
