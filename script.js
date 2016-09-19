@@ -64,6 +64,17 @@ var Sounds = function(){
 		});
 	}
 
+	this.loadTrackFromUrl = function(trackUrl){
+		var url = 'https://api.soundcloud.com/resolve.json?url=' + trackUrl + '&client_id=' + self.client_id;
+		console.log('url: ', url);
+		$.ajax({
+			method: 'GET',
+			url: url
+		}).done(function(response){
+			self.loadTrack('/tracks/' + response.id);
+		})
+	}
+
 	this.loadTrack = function(url){
 		SC.get(url).then(function(sound, error) {
 			var source = sound.stream_url + '?client_id=' + self.client_id;
@@ -119,6 +130,12 @@ $('.color').colorPicker({
     $('.bar').css("background", bg)
   }
 });
+
+$('#song-link').on('change', function(){
+	console.log($('#song-link').val());
+	var val = $('#song-link').val();
+	sound.loadTrackFromUrl(val);
+})
 
 var sights = new Sights();
 var sound = new Sounds();
