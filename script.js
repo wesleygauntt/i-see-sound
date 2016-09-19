@@ -42,14 +42,14 @@ var Sights = function(){
     var transformOrigin = '0px 0px';
 
 		for (var i = 0; i < twopi; i += change) {
-				var left = (center + radius * Math.cos(i)) + 'px';
-		    var top = (center + radius * Math.sin(i)) + 'px';
-		    var transform = 'rotate(' + (i - (Math.PI / 2)) + 'rad)';
-		    var style = `left: ${left}; top: ${top}; transform: ${transform}; transform-origin: ${transformOrigin};`;
-				var $d = $("<div>", {class: "circular-bar", style: style});
+			var left = (center + radius * Math.cos(i)) + 'px';
+	    var top = (center + radius * Math.sin(i)) + 'px';
+	    var transform = 'rotate(' + (i - (Math.PI / 2)) + 'rad)';
+	    var style = `left: ${left}; top: ${top}; transform: ${transform}; transform-origin: ${transformOrigin};`;
+			var $d = $("<div>", {class: "circular-bar", style: style});
 
-		    self.bars.push($d);
-		    circlesEl.append($d);
+	    self.bars.push($d);
+	    circlesEl.append($d);
 		}
 	}
 }
@@ -65,8 +65,7 @@ var Sounds = function(){
 	}
 
 	this.loadTrackFromUrl = function(trackUrl){
-		var url = 'https://api.soundcloud.com/resolve.json?url=' + trackUrl + '&client_id=' + self.client_id;
-		console.log('url: ', url);
+		var url = 'https://api.soundcloud.com/resolve?url=' + trackUrl + '&client_id=' + self.client_id;
 		$.ajax({
 			method: 'GET',
 			url: url
@@ -92,17 +91,15 @@ var Sounds = function(){
 		// Bind our analyser to the media element source.
 		audioSrc.connect(analyser);
 		audioSrc.connect(audioCtx.destination);
-
 		var frequencyData = new Uint8Array(analyser.frequencyBinCount);
 		
-		// sights.prepare(window.innerHeight, window.innerWidth, (analyser.frequencyBinCount / 2));
-		sights.prepare(200, 200, (analyser.frequencyBinCount / 2));
+		sights.prepare(screen.height, screen.width, (analyser.frequencyBinCount / 2));
 		// sights.circle(200, 400, (analyser.frequencyBinCount / 6));
 
 		function renderFrame() {
-		   requestAnimationFrame(renderFrame);
-		   analyser.getByteFrequencyData(frequencyData);
-		   sights.render(400, frequencyData)
+		  requestAnimationFrame(renderFrame);
+		  analyser.getByteFrequencyData(frequencyData);
+		  sights.render(400, frequencyData)
 		}
 		renderFrame();
 	}
@@ -131,11 +128,11 @@ $('.color').colorPicker({
   }
 });
 
-$('#song-link').on('change', function(){
-	console.log($('#song-link').val());
-	var val = $('#song-link').val();
-	sound.loadTrackFromUrl(val);
-})
+// $('#song-link').on('change', function(){
+// 	console.log($('#song-link').val());
+// 	var val = $('#song-link').val();
+// 	sound.loadTrackFromUrl(val);
+// })
 
 var sights = new Sights();
 var sound = new Sounds();
