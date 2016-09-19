@@ -1,3 +1,6 @@
+var color1 = '#9dd53a';
+var color2 = '#80c217';
+
 var Sights = function(){
 	var self = this;
 	this.bars = [];
@@ -7,17 +10,18 @@ var Sights = function(){
 
     for (var i = 0; i < length; i++) {
       var bar = self.bars[i];
-      // bar.height((frequencyData[i] / 250) * height + 'px');
-      bar.height((frequencyData[i] / 500) * height + 'px');
+      bar.height((frequencyData[i] / 250) * height + 'px');
+      // bar.height((frequencyData[i] / 500) * height + 'px');
     }
 	}
 
 	this.prepare = function(height, width, count){
 	  var barWidth = (width / count);
+	  var background = `linear-gradient(to bottom, ${color1} 0%,${color1} 50%,${color2} 52%,${color2} 99%);`;
 
 	  for (var i = 0; i < count; i++) {
       var left = barWidth * i;
-      var $d = $("<div>", {class: "bar", style: `left: ${left}px; width: ${barWidth}px`});
+      var $d = $("<div>", {class: "bar", style: `left: ${left}px; width: ${barWidth}px; background: ${background}`});
       self.bars.push($d);
       $('#visualization').append($d);
 	  }
@@ -80,8 +84,9 @@ var Sounds = function(){
 
 		var frequencyData = new Uint8Array(analyser.frequencyBinCount);
 		
-		// sights.prepare(200, 400, (analyser.frequencyBinCount / 2));
-		sights.circle(200, 400, (analyser.frequencyBinCount / 6));
+		// sights.prepare(window.innerHeight, window.innerWidth, (analyser.frequencyBinCount / 2));
+		sights.prepare(200, 200, (analyser.frequencyBinCount / 2));
+		// sights.circle(200, 400, (analyser.frequencyBinCount / 6));
 
 		function renderFrame() {
 		   requestAnimationFrame(renderFrame);
@@ -92,6 +97,28 @@ var Sounds = function(){
 	}
 }
 
+
+/*
+	Reference for color picker:
+	https://github.com/PitPik/tinyColorPicker
+*/
+$('.color').colorPicker({
+	renderCallback: function(element, toggled) {
+	  var colors = this.color.colors;
+	  console.log('element: ', element);
+
+    $(element).css({
+      backgroundColor: '#' + colors.HEX,
+      color: colors.RGBLuminance > 0.22 ? '#222' : '#ddd'
+    });
+
+    color1 = $('#color-picker-1 div')[0].style.backgroundColor;
+    color2 = $('#color-picker-2 div')[0].style.backgroundColor;
+
+	  var bg = `linear-gradient(to bottom, ${color1} 0%,${color1} 50%,${color2} 51%,${color2} 100%)`;
+    $('.bar').css("background", bg)
+  }
+});
 
 var sights = new Sights();
 var sound = new Sounds();
